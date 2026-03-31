@@ -30,4 +30,9 @@ void data_storage_read();
  */
 void data_storage_update();
 
+/**
+ * Fix EEPROM parameters if they contain old GEL values for 6S NMC system
+ */
+void data_storage_fix_eeprom_nmc();
+
 #endif /* DATA_STORAGE_H_ */

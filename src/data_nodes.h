@@ -60,6 +60,11 @@ void data_nodes_update_conf();
 void data_nodes_init();
 
 /**
+ * Syncs LoadInfo debug parameters for ThingSet output
+ */
+void data_nodes_sync_load_debug();
+
+/**
  * Callback to provide authentication mechanism via ThingSet
  */
 void thingset_auth();

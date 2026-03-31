@@ -11,6 +11,7 @@
 #include "mcu.h"
 #include "thingset.h"
 #include "data_nodes.h"
+#include "setup.h"
 #include "helper.h"
 
 #include <stdio.h>
@@ -28,6 +29,7 @@ K_MUTEX_DEFINE(data_buf_lock);
 static uint8_t buf[512] __aligned(sizeof(uint32_t));
 
 extern ThingSet ts;
+extern BatConf bat_conf_user;
 
 uint32_t _calc_crc(const uint8_t *buf, size_t len)
 {
@@ -260,6 +262,38 @@ void data_storage_read() {;}
 void data_storage_update()
 {
     if (uptime() % DATA_UPDATE_INTERVAL == 0 && uptime() > 0) {
+        data_storage_write();
+    }
+}
+
+void data_storage_fix_eeprom_nmc()
+{
+    // Only update if parameters are not already correct
+    bool need_update = false;
+    
+    if (bat_conf_user.voltage_load_disconnect != 10.0) {
+        bat_conf_user.voltage_load_disconnect = 10.0;
+        need_update = true;
+    }
+    if (bat_conf_user.voltage_load_reconnect != 15.0) {
+        bat_conf_user.voltage_load_reconnect = 15.0;
+        need_update = true;
+    }
+    if (bat_conf_user.voltage_absolute_min != 10.0) {
+        bat_conf_user.voltage_absolute_min = 10.0;
+        need_update = true;
+    }
+    if (bat_conf_user.topping_voltage != 25.5) {
+        bat_conf_user.topping_voltage = 25.5;
+        need_update = true;
+    }
+    if (bat_conf_user.voltage_absolute_max != 25.5) {
+        bat_conf_user.voltage_absolute_max = 25.5;
+        need_update = true;
+    }
+    
+    // Only write to EEPROM if parameters changed
+    if (need_update) {
         data_storage_write();
     }
 }

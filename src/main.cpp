@@ -39,7 +39,8 @@ void main(void)
     setup();
 
     battery_conf_init(&bat_conf, CONFIG_BAT_TYPE, CONFIG_BAT_NUM_CELLS, CONFIG_BAT_CAPACITY_AH);
-    battery_conf_overwrite(&bat_conf, &bat_conf_user);  // initialize conf_user with same values
+    //battery_conf_overwrite(&bat_conf, &bat_conf_user);  // initialize conf_user with same values
+    // ^ DISABLED: Force use of compile-time battery config to override incorrect EEPROM parameters
 
     #if BOARD_HAS_DCDC
     daq_set_hv_limit(DT_PROP(DT_PATH(pcb), hs_voltage_max));
@@ -55,6 +56,9 @@ void main(void)
 
     // read custom configuration from EEPROM
     data_nodes_init();
+    
+    // Fix EEPROM parameters if they contain old GEL values
+    data_storage_fix_eeprom_nmc();
 
     // Data Acquisition (DAQ) setup
     daq_setup();
@@ -63,6 +67,7 @@ void main(void)
     charger.init_terminal(&bat_conf);
 
     #if BOARD_HAS_LOAD_OUTPUT
+    // bat_conf parameters already initialized in battery_conf_init() for 6S NMC system
     load.set_voltage_limits(bat_conf.voltage_load_disconnect, bat_conf.voltage_load_reconnect,
         bat_conf.voltage_absolute_max);
     #endif
@@ -163,6 +168,7 @@ void control_thread()
 
         #if BOARD_HAS_LOAD_OUTPUT
         load.control();
+        data_nodes_sync_load_debug();
         #endif
 
         #if BOARD_HAS_USB_OUTPUT

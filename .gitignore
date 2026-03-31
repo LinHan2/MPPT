@@ -10,3 +10,4 @@ custom.ini
 tools
 *.bak
 *_bak
+build/

@@ -105,11 +105,15 @@ void LoadOutput::control()
     else {
         // load is off: check if errors are resolved and if load can be switched on
 
-        if (flags_check(&error_flags, ERR_LOAD_SHEDDING) &&
-            bus->voltage > bus->src_control_voltage(reconnect_voltage) &&
-            uptime() - lvd_timestamp > lvd_recovery_delay)
-        {
-            flags_clear(&error_flags, ERR_LOAD_SHEDDING);
+        if (flags_check(&error_flags, ERR_LOAD_SHEDDING)) {
+            // Clear low voltage shedding error if voltage is well above reconnect threshold
+            // or after recovery delay has passed
+            if (bus->voltage > bus->src_control_voltage(reconnect_voltage) + 1.0F ||
+                (bus->voltage > bus->src_control_voltage(reconnect_voltage) &&
+                 uptime() - lvd_timestamp > lvd_recovery_delay))
+            {
+                flags_clear(&error_flags, ERR_LOAD_SHEDDING);
+            }
         }
 
         if (flags_check(&error_flags, ERR_LOAD_OVERCURRENT | ERR_LOAD_VOLTAGE_DIP) &&

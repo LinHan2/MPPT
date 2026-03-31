@@ -127,8 +127,16 @@ void battery_conf_init(BatConf *bat, int type, int num_cells, float nominal_capa
                 static_cast<float>(num_cells) * 0.05F;
             bat->voltage_recharge        = static_cast<float>(num_cells) * 3.9F;
 
-            bat->voltage_load_disconnect = static_cast<float>(num_cells) * 3.3F;
-            bat->voltage_load_reconnect  = static_cast<float>(num_cells) * 3.6F;
+            // Override for 6S NMC system: 10V-25.5V operating range
+            if (num_cells == 6) {
+                bat->voltage_load_disconnect = 10.0F;
+                bat->voltage_load_reconnect  = 15.0F;
+                bat->voltage_absolute_max    = 25.5F;
+                bat->topping_voltage         = 25.2F;  // 6 * 4.2V
+            } else {
+                bat->voltage_load_disconnect = static_cast<float>(num_cells) * 3.3F;
+                bat->voltage_load_reconnect  = static_cast<float>(num_cells) * 3.6F;
+            }
 
             // 5% voltage drop at max current
             bat->internal_resistance     = bat->voltage_load_disconnect * 0.05F /

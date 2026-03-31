@@ -125,11 +125,19 @@ public:
      */
     void set_voltage_limits(float lvd, float lvr, float ov);
 
+    // Getters for LoadInfo debug parameters
+    float get_disconnect_voltage() const { return disconnect_voltage; }
+    float get_reconnect_voltage() const { return reconnect_voltage; }
+    float get_overvoltage() const { return overvoltage; }
+    int get_ov_debounce_counter() const { return ov_debounce_counter; }
+
     uint32_t state;             ///< Current state of load output switch
 
     uint32_t error_flags = 0;   ///< Stores error flags as bits according to LoadErrorFlag enum
 
     int32_t info;               ///< Contains either the state or negative value of error_flags
+    
+    time_t startup_timestamp = 0;   ///< Timestamp when load was initialized (for startup grace period)
                                 ///< in case of error_flags > 0. This allows to have a single
                                 ///< variable for load state diagnosis.
 

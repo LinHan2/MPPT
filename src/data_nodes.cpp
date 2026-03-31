@@ -55,6 +55,16 @@ bool pub_can_enable = IS_ENABLED(CONFIG_THINGSET_CAN_PUB_DEFAULT);
 uint16_t can_node_addr = CONFIG_THINGSET_CAN_DEFAULT_NODE_ID;
 #endif
 
+// LoadInfo debug parameters
+#if BOARD_HAS_LOAD_OUTPUT
+static float load_bus_voltage = 0;
+static float load_disconnect_voltage = 0;
+static float load_reconnect_voltage = 0;
+static float load_overvoltage = 0;
+static uint32_t load_error_flags = 0;
+static int load_ov_debounce = 0;
+#endif
+
 /**
  * Data Objects
  *
@@ -311,6 +321,21 @@ static DataNode data_nodes[] = {
 
     TS_NODE_INT32(0x8B, "LoadInfo", &load.info,
         ID_OUTPUT, TS_ANY_R, PUB_SER | PUB_CAN),
+
+    TS_NODE_FLOAT(0x8D, "LoadBus_V", &load_bus_voltage, 2,
+        ID_OUTPUT, TS_ANY_R, PUB_SER),
+
+    TS_NODE_FLOAT(0x8E, "LoadLvdTrip_V", &load_disconnect_voltage, 2,
+        ID_OUTPUT, TS_ANY_R, PUB_SER),
+
+    TS_NODE_FLOAT(0x8F, "LoadOvTrip_V", &load_overvoltage, 2,
+        ID_OUTPUT, TS_ANY_R, PUB_SER),
+
+    TS_NODE_UINT32(0x9A, "LoadErrFlags", &load_error_flags,
+        ID_OUTPUT, TS_ANY_R, PUB_SER),
+
+    TS_NODE_INT32(0x9B, "LoadOvDbCnt", &load_ov_debounce,
+        ID_OUTPUT, TS_ANY_R, PUB_SER),
 #endif
 
 #if BOARD_HAS_USB_OUTPUT
@@ -525,6 +550,18 @@ void data_nodes_init()
     else {
         battery_conf_overwrite(&bat_conf, &bat_conf_user);
     }
+}
+
+void data_nodes_sync_load_debug()
+{
+#if BOARD_HAS_LOAD_OUTPUT
+    load_bus_voltage = load.bus->voltage;
+    load_disconnect_voltage = load.get_disconnect_voltage();
+    load_reconnect_voltage = load.get_reconnect_voltage();
+    load_overvoltage = load.get_overvoltage();
+    load_error_flags = load.error_flags;
+    load_ov_debounce = load.get_ov_debounce_counter();
+#endif
 }
 
 void thingset_auth()
