@@ -244,6 +244,9 @@ void data_storage_write()
         if (ret == len + NVS_HEADER_SIZE) {
             LOG_INF("NVS data successfully stored");
         }
+        else if (ret == 0) {
+            LOG_DBG("NVS data unchanged, skip write");
+        }
         else {
             LOG_ERR("NVS write error %d", ret);
         }
@@ -271,8 +274,8 @@ void data_storage_fix_eeprom_nmc()
     // Only update if parameters are not already correct
     bool need_update = false;
     
-    if (bat_conf_user.voltage_load_disconnect != 10.0) {
-        bat_conf_user.voltage_load_disconnect = 10.0;
+    if (bat_conf_user.voltage_load_disconnect != 12.0) {
+        bat_conf_user.voltage_load_disconnect = 12.0;
         need_update = true;
     }
     if (bat_conf_user.voltage_load_reconnect != 15.0) {
@@ -283,12 +286,12 @@ void data_storage_fix_eeprom_nmc()
         bat_conf_user.voltage_absolute_min = 10.0;
         need_update = true;
     }
-    if (bat_conf_user.topping_voltage != 25.5) {
-        bat_conf_user.topping_voltage = 25.5;
+    if (bat_conf_user.topping_voltage != 50.0) {
+        bat_conf_user.topping_voltage = 50.0;
         need_update = true;
     }
-    if (bat_conf_user.voltage_absolute_max != 25.5) {
-        bat_conf_user.voltage_absolute_max = 25.5;
+    if (bat_conf_user.voltage_absolute_max != 50.0) {
+        bat_conf_user.voltage_absolute_max = 50.0;
         need_update = true;
     }
     

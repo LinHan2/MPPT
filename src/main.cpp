@@ -39,7 +39,7 @@ void main(void)
     setup();
 
     battery_conf_init(&bat_conf, CONFIG_BAT_TYPE, CONFIG_BAT_NUM_CELLS, CONFIG_BAT_CAPACITY_AH);
-    //battery_conf_overwrite(&bat_conf, &bat_conf_user);  // initialize conf_user with same values
+    // battery_conf_overwrite(&bat_conf, &bat_conf_user);  // initialize conf_user with same values
     // ^ DISABLED: Force use of compile-time battery config to override incorrect EEPROM parameters
 
     #if BOARD_HAS_DCDC
@@ -63,7 +63,9 @@ void main(void)
     // Data Acquisition (DAQ) setup
     daq_setup();
 
-    charger.detect_num_batteries(&bat_conf);     // check if we have 24V instead of 12V system
+    // Disabled for fixed whole-pack voltage configuration (e.g. fixed 12S profile):
+    // auto-detection can set series_multiplier=2 and unintentionally double thresholds.
+    // charger.detect_num_batteries(&bat_conf);
     charger.init_terminal(&bat_conf);
 
     #if BOARD_HAS_LOAD_OUTPUT

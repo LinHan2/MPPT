@@ -18,7 +18,7 @@
 		type = "MPPT 2420 HC";
 
 		hs-voltage-max = <90>;
-		ls-voltage-max = <32>;
+		ls-voltage-max = <50>;
 		dcdc-current-max = <20>;
 	};
 
@@ -72,8 +72,8 @@
 
 		v-low {
 			io-channels = <&adc1 12>;
-			multiplier = <105600>;
-			divider = <5600>;
+			multiplier = <102200>;
+			divider = <2200>;
 		};
 
 		v-high {
@@ -159,12 +159,11 @@
 
 &timers1 {
 	status = "okay";
-
 	halfbridge {
 		compatible = "half-bridge";
 		pinctrl-0 = <&tim1_ch1_pa8 &tim1_ch1n_pc13>;
 		frequency = <70000>;
-		deadtime = <300>;
+		deadtime = <290>;
 	};
 };
 
