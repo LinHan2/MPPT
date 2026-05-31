@@ -274,24 +274,24 @@ void data_storage_fix_eeprom_nmc()
     // Only update if parameters are not already correct
     bool need_update = false;
     
-    if (bat_conf_user.voltage_load_disconnect != 12.0) {
-        bat_conf_user.voltage_load_disconnect = 12.0;
+    if (bat_conf_user.voltage_load_disconnect != 39.6F) {
+        bat_conf_user.voltage_load_disconnect = 39.6F;
         need_update = true;
     }
-    if (bat_conf_user.voltage_load_reconnect != 15.0) {
-        bat_conf_user.voltage_load_reconnect = 15.0;
+    if (bat_conf_user.voltage_load_reconnect != 43.2F) {
+        bat_conf_user.voltage_load_reconnect = 43.2F;
         need_update = true;
     }
-    if (bat_conf_user.voltage_absolute_min != 10.0) {
-        bat_conf_user.voltage_absolute_min = 10.0;
+    if (bat_conf_user.voltage_absolute_min != 30.0F) {
+        bat_conf_user.voltage_absolute_min = 30.0F;
         need_update = true;
     }
-    if (bat_conf_user.topping_voltage != 50.0) {
-        bat_conf_user.topping_voltage = 50.0;
+    if (bat_conf_user.topping_voltage != 50.4F) {
+        bat_conf_user.topping_voltage = 50.4F;
         need_update = true;
     }
-    if (bat_conf_user.voltage_absolute_max != 50.0) {
-        bat_conf_user.voltage_absolute_max = 50.0;
+    if (bat_conf_user.voltage_absolute_max != 51.0F) {
+        bat_conf_user.voltage_absolute_max = 51.0F;
         need_update = true;
     }
     
